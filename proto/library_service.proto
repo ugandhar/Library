@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package neighborhood.library.v1;
+
+import "google/protobuf/timestamp.proto";
+
+message Book {
+  int32 id = 1;
+  string title = 2;
+  string author = 3;
+  string isbn = 4;
+  int32 published_year = 5;
+  int32 total_copies = 6;
+  int32 available_copies = 7;
+}
+
+message Member {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  string phone = 4;
+  string address = 5;
+  bool is_active = 6;
+}
+
+message Loan {
+  int32 id = 1;
+  int32 member_id = 2;
+  int32 book_id = 3;
+  google.protobuf.Timestamp borrowed_at = 4;
+  string due_date = 5;
+  google.protobuf.Timestamp returned_at = 6;
+}
+
+message CreateBookRequest {
+  string title = 1;
+  string author = 2;
+  string isbn = 3;
+  int32 published_year = 4;
+  int32 total_copies = 5;
+}
+
+message UpdateBookRequest {
+  int32 id = 1;
+  string title = 2;
+  string author = 3;
+  string isbn = 4;
+  int32 published_year = 5;
+  int32 total_copies = 6;
+}
+
+message CreateMemberRequest {
+  string name = 1;
+  string email = 2;
+  string phone = 3;
+  string address = 4;
+  bool is_active = 5;
+}
+
+message BorrowBookRequest {
+  int32 member_id = 1;
+  int32 book_id = 2;
+  string due_date = 3;
+}
+
+message ReturnBookRequest {
+  int32 loan_id = 1;
+}
+
+message ListLoansRequest {
+  int32 member_id = 1;
+  bool active_only = 2;
+}
+
+message ListLoansResponse {
+  repeated Loan loans = 1;
+}
+
+service LibraryService {
+  rpc CreateBook(CreateBookRequest) returns (Book);
+  rpc UpdateBook(UpdateBookRequest) returns (Book);
+  rpc CreateMember(CreateMemberRequest) returns (Member);
+  rpc BorrowBook(BorrowBookRequest) returns (Loan);
+  rpc ReturnBook(ReturnBookRequest) returns (Loan);
+  rpc ListLoans(ListLoansRequest) returns (ListLoansResponse);
+}
