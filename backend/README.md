@@ -45,6 +45,15 @@ Backend URLs:
 - API base: `http://127.0.0.1:8000`
 - Swagger UI: `http://127.0.0.1:8000/docs`
 
+## Run Backend Tests
+
+From backend repo folder:
+
+```bash
+cd /Users/swethareddy/projects/Library/backend
+python3 -m pytest -q
+```
+
 ## Core Endpoints
 
 - `POST /books` - create book
