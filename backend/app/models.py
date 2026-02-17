@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -13,7 +14,7 @@ class Book(Base):
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     author: Mapped[str] = mapped_column(String(255), nullable=False)
     isbn: Mapped[str] = mapped_column(String(32), nullable=False, unique=True, index=True)
-    publication_year: Mapped[int | None] = mapped_column(Integer)
+    publication_year: Mapped[Optional[int]] = mapped_column(Integer)
     total_copies: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     available_copies: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
@@ -35,8 +36,8 @@ class Member(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
-    phone: Mapped[str | None] = mapped_column(String(32))
-    address: Mapped[str | None] = mapped_column(String(255))
+    phone: Mapped[Optional[str]] = mapped_column(String(32))
+    address: Mapped[Optional[str]] = mapped_column(String(255))
     active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -52,7 +53,7 @@ class Loan(Base):
     book_id: Mapped[int] = mapped_column(ForeignKey("books.id", ondelete="RESTRICT"), nullable=False, index=True)
     borrowed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=datetime.utcnow)
     due_date: Mapped[Date] = mapped_column(Date, nullable=False)
-    returned_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    returned_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
 
     member: Mapped["Member"] = relationship("Member", back_populates="loans")
     book: Mapped["Book"] = relationship("Book", back_populates="loans")

@@ -8,12 +8,17 @@ Python + FastAPI + PostgreSQL backend for library operations.
 - `members`: library member profile/contact info
 - `loans`: borrow/return transaction records
 
-## Quick Start
+## Run Backend Server (this repo)
+
+From the backend folder in this repo:
+
+```bash
+cd /Users/swethareddy/projects/Library/backend
+```
 
 1. Start PostgreSQL:
 
 ```bash
-cd backend
 docker compose up -d db
 ```
 
@@ -23,22 +28,21 @@ docker compose up -d db
 cp .env.example .env
 ```
 
-3. Create virtual env and install dependencies:
+3. Install dependencies:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
-4. Run API server:
+4. Start the API server:
 
 ```bash
-uvicorn app.main:app --reload
+python3 -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-5. Open docs:
+Backend URLs:
 
+- API base: `http://127.0.0.1:8000`
 - Swagger UI: `http://127.0.0.1:8000/docs`
 
 ## Core Endpoints

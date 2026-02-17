@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
@@ -7,7 +8,7 @@ class BookBase(BaseModel):
     title: str = Field(min_length=1, max_length=255)
     author: str = Field(min_length=1, max_length=255)
     isbn: str = Field(min_length=10, max_length=32)
-    publication_year: int | None = Field(default=None, ge=0, le=9999)
+    publication_year: Optional[int] = Field(default=None, ge=0, le=9999)
     total_copies: int = Field(default=1, ge=1)
 
 
@@ -16,12 +17,12 @@ class BookCreate(BookBase):
 
 
 class BookUpdate(BaseModel):
-    title: str | None = Field(default=None, min_length=1, max_length=255)
-    author: str | None = Field(default=None, min_length=1, max_length=255)
-    isbn: str | None = Field(default=None, min_length=10, max_length=32)
-    publication_year: int | None = Field(default=None, ge=0, le=9999)
-    total_copies: int | None = Field(default=None, ge=1)
-    active: bool | None = None
+    title: Optional[str] = Field(default=None, min_length=1, max_length=255)
+    author: Optional[str] = Field(default=None, min_length=1, max_length=255)
+    isbn: Optional[str] = Field(default=None, min_length=10, max_length=32)
+    publication_year: Optional[int] = Field(default=None, ge=0, le=9999)
+    total_copies: Optional[int] = Field(default=None, ge=1)
+    active: Optional[bool] = None
 
 
 class BookResponse(BaseModel):
@@ -31,7 +32,7 @@ class BookResponse(BaseModel):
     title: str
     author: str
     isbn: str
-    publication_year: int | None
+    publication_year: Optional[int]
     total_copies: int
     available_copies: int
     active: bool
@@ -40,8 +41,8 @@ class BookResponse(BaseModel):
 class MemberBase(BaseModel):
     name: str = Field(min_length=1, max_length=255)
     email: EmailStr
-    phone: str | None = Field(default=None, max_length=32)
-    address: str | None = Field(default=None, max_length=255)
+    phone: Optional[str] = Field(default=None, max_length=32)
+    address: Optional[str] = Field(default=None, max_length=255)
 
 
 class MemberCreate(MemberBase):
@@ -49,11 +50,11 @@ class MemberCreate(MemberBase):
 
 
 class MemberUpdate(BaseModel):
-    name: str | None = Field(default=None, min_length=1, max_length=255)
-    email: EmailStr | None = None
-    phone: str | None = Field(default=None, max_length=32)
-    address: str | None = Field(default=None, max_length=255)
-    active: bool | None = None
+    name: Optional[str] = Field(default=None, min_length=1, max_length=255)
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = Field(default=None, max_length=32)
+    address: Optional[str] = Field(default=None, max_length=255)
+    active: Optional[bool] = None
 
 
 class MemberResponse(BaseModel):
@@ -62,15 +63,15 @@ class MemberResponse(BaseModel):
     id: int
     name: str
     email: EmailStr
-    phone: str | None
-    address: str | None
+    phone: Optional[str]
+    address: Optional[str]
     active: bool
 
 
 class BorrowRequest(BaseModel):
     member_id: int
     book_id: int
-    due_date: date | None = None
+    due_date: Optional[date] = None
 
 
 class ReturnResponse(BaseModel):
@@ -86,7 +87,7 @@ class LoanResponse(BaseModel):
     book_id: int
     borrowed_at: datetime
     due_date: date
-    returned_at: datetime | None
+    returned_at: Optional[datetime]
 
 
 class BorrowedBookView(BaseModel):
