@@ -18,10 +18,14 @@ def create_book(db: Session, payload: BookCreate) -> Book:
         total_copies=payload.total_copies,
         available_copies=payload.total_copies,
     )
-    db.add(book)
-    db.commit()
-    db.refresh(book)
-    return book
+    try:
+        db.add(book)
+        db.commit()
+        db.refresh(book)
+        return book
+    except Exception:
+        db.rollback()
+        raise
 
 
 def list_books(db: Session) -> list[Book]:
@@ -57,6 +61,10 @@ def update_book(db: Session, book_id: int, payload: BookUpdate) -> Book:
     for field, value in updates.items():
         setattr(book, field, value)
 
-    db.commit()
-    db.refresh(book)
-    return book
+    try:
+        db.commit()
+        db.refresh(book)
+        return book
+    except Exception:
+        db.rollback()
+        raise

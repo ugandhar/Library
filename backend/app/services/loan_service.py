@@ -38,10 +38,14 @@ def borrow_book(db: Session, payload: BorrowRequest) -> Loan:
     loan = Loan(member_id=payload.member_id, book_id=payload.book_id, due_date=due_date)
     book.available_copies -= 1
 
-    db.add(loan)
-    db.commit()
-    db.refresh(loan)
-    return loan
+    try:
+        db.add(loan)
+        db.commit()
+        db.refresh(loan)
+        return loan
+    except Exception:
+        db.rollback()
+        raise
 
 
 def return_book(db: Session, loan_id: int) -> ReturnResponse:
@@ -59,8 +63,12 @@ def return_book(db: Session, loan_id: int) -> ReturnResponse:
     loan.returned_at = datetime.now(timezone.utc)
     book.available_copies += 1
 
-    db.commit()
-    return ReturnResponse(loan_id=loan.id, returned_at=loan.returned_at)
+    try:
+        db.commit()
+        return ReturnResponse(loan_id=loan.id, returned_at=loan.returned_at)
+    except Exception:
+        db.rollback()
+        raise
 
 
 def list_loans(db: Session, member_id: Optional[int] = None, active_only: bool = False) -> list[Loan]:

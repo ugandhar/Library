@@ -13,10 +13,14 @@ def create_member(db: Session, payload: MemberCreate) -> Member:
         raise HTTPException(status_code=409, detail="Member with this email already exists")
 
     member = Member(**payload.model_dump())
-    db.add(member)
-    db.commit()
-    db.refresh(member)
-    return member
+    try:
+        db.add(member)
+        db.commit()
+        db.refresh(member)
+        return member
+    except Exception:
+        db.rollback()
+        raise
 
 
 def list_members(db: Session) -> list[Member]:
@@ -42,9 +46,13 @@ def update_member(db: Session, member_id: int, payload: MemberUpdate) -> Member:
     for field, value in updates.items():
         setattr(member, field, value)
 
-    db.commit()
-    db.refresh(member)
-    return member
+    try:
+        db.commit()
+        db.refresh(member)
+        return member
+    except Exception:
+        db.rollback()
+        raise
 
 
 def member_borrowed_books(db: Session, member_id: int, active_only: bool = True) -> list[BorrowedBookView]:
