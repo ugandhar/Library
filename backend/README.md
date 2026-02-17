@@ -44,8 +44,12 @@ uvicorn app.main:app --reload
 ## Core Endpoints
 
 - `POST /books` - create book
+- `GET /books` - list books
+- `GET /books/{book_id}` - get one book
 - `PUT /books/{book_id}` - update book
 - `POST /members` - create member
+- `GET /members` - list members
+- `GET /members/{member_id}` - get one member
 - `PUT /members/{member_id}` - update member
 - `POST /loans/borrow` - borrow book
 - `POST /loans/{loan_id}/return` - return book
@@ -68,4 +72,12 @@ curl -X POST http://127.0.0.1:8000/loans/borrow \
   -d '{"member_id":1,"book_id":1}'
 
 curl -X POST http://127.0.0.1:8000/loans/1/return
+```
+
+## Demo Script
+
+Run an end-to-end demo (create book/member, borrow, list borrowed books):
+
+```bash
+./scripts/demo.sh
 ```

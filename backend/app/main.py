@@ -49,6 +49,19 @@ def create_book(payload: BookCreate, db: Session = Depends(get_db)):
     return book
 
 
+@app.get("/books", response_model=list[BookResponse])
+def list_books(db: Session = Depends(get_db)):
+    return db.query(Book).order_by(Book.id.asc()).all()
+
+
+@app.get("/books/{book_id}", response_model=BookResponse)
+def get_book(book_id: int, db: Session = Depends(get_db)):
+    book = db.query(Book).filter(Book.id == book_id).first()
+    if not book:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return book
+
+
 @app.put("/books/{book_id}", response_model=BookResponse)
 def update_book(book_id: int, payload: BookUpdate, db: Session = Depends(get_db)):
     book = db.query(Book).filter(Book.id == book_id).first()
@@ -89,6 +102,19 @@ def create_member(payload: MemberCreate, db: Session = Depends(get_db)):
     db.add(member)
     db.commit()
     db.refresh(member)
+    return member
+
+
+@app.get("/members", response_model=list[MemberResponse])
+def list_members(db: Session = Depends(get_db)):
+    return db.query(Member).order_by(Member.id.asc()).all()
+
+
+@app.get("/members/{member_id}", response_model=MemberResponse)
+def get_member(member_id: int, db: Session = Depends(get_db)):
+    member = db.query(Member).filter(Member.id == member_id).first()
+    if not member:
+        raise HTTPException(status_code=404, detail="Member not found")
     return member
 
 
