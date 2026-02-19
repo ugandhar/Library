@@ -38,3 +38,4 @@ CREATE INDEX IF NOT EXISTS idx_loans_active ON loans(returned_at);
 CREATE UNIQUE INDEX IF NOT EXISTS uq_loans_active_member_book
     ON loans(member_id, book_id)
     WHERE returned_at IS NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS uq_members_email ON members(email);
