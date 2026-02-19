@@ -1,9 +1,13 @@
 from collections.abc import Generator
 
 import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
+from app.controllers import books, loans, members
+from app.database import get_db
 from app.models import Base
 
 
@@ -21,3 +25,19 @@ def db_session(tmp_path) -> Generator[Session, None, None]:
     finally:
         session.close()
         Base.metadata.drop_all(bind=engine)
+
+
+@pytest.fixture
+def client(db_session: Session) -> Generator[TestClient, None, None]:
+    app = FastAPI()
+    app.include_router(books.router)
+    app.include_router(members.router)
+    app.include_router(loans.router)
+
+    def override_get_db():
+        yield db_session
+
+    app.dependency_overrides[get_db] = override_get_db
+
+    with TestClient(app) as test_client:
+        yield test_client
