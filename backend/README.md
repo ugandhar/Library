@@ -85,6 +85,10 @@ python3 -m pytest -q
 - `GET /loans` - list loans with filters
 - `GET /loans/overdue` - list active overdue loans (optional `member_id` filter)
 
+Pagination:
+- List endpoints support `offset` and `limit` query params.
+- Defaults: `offset=0`, `limit=20` (max `limit=100`).
+
 ## Sample API Calls
 
 ```bash

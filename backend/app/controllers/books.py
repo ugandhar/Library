@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from ..database import get_db
@@ -14,8 +14,12 @@ def create_book(payload: BookCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/books", response_model=list[BookResponse])
-def list_books(db: Session = Depends(get_db)):
-    return book_service.list_books(db)
+def list_books(
+    offset: int = Query(default=0, ge=0),
+    limit: int = Query(default=20, ge=1, le=100),
+    db: Session = Depends(get_db),
+):
+    return book_service.list_books(db, offset=offset, limit=limit)
 
 
 @router.get("/books/{book_id}", response_model=BookResponse)

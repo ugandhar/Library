@@ -71,26 +71,39 @@ def return_book(db: Session, loan_id: int) -> ReturnResponse:
         raise
 
 
-def list_loans(db: Session, member_id: Optional[int] = None, active_only: bool = False) -> list[Loan]:
+def list_loans(
+    db: Session,
+    member_id: Optional[int] = None,
+    active_only: bool = False,
+    offset: int = 0,
+    limit: int = 20,
+) -> list[Loan]:
     query = db.query(Loan)
     if member_id is not None:
         query = query.filter(Loan.member_id == member_id)
     if active_only:
         query = query.filter(Loan.returned_at.is_(None))
-    return query.order_by(Loan.borrowed_at.desc()).all()
+    return query.order_by(Loan.borrowed_at.desc()).offset(offset).limit(limit).all()
 
 
-def list_overdue_loans(db: Session, member_id: Optional[int] = None) -> list[Loan]:
+def list_overdue_loans(
+    db: Session,
+    member_id: Optional[int] = None,
+    offset: int = 0,
+    limit: int = 20,
+) -> list[Loan]:
     query = db.query(Loan).filter(Loan.returned_at.is_(None), Loan.due_date < date.today())
     if member_id is not None:
         query = query.filter(Loan.member_id == member_id)
-    return query.order_by(Loan.borrowed_at.desc()).all()
+    return query.order_by(Loan.borrowed_at.desc()).offset(offset).limit(limit).all()
 
 
 def list_loans_with_details(
     db: Session,
     member_id: Optional[int] = None,
     active_only: bool = False,
+    offset: int = 0,
+    limit: int = 20,
 ) -> list[LoanListResponse]:
     query = (
         db.query(Loan, Member.name, Book.title)
@@ -102,7 +115,7 @@ def list_loans_with_details(
     if active_only:
         query = query.filter(Loan.returned_at.is_(None))
 
-    rows = query.order_by(Loan.borrowed_at.desc()).all()
+    rows = query.order_by(Loan.borrowed_at.desc()).offset(offset).limit(limit).all()
     return [
         LoanListResponse(
             id=loan.id,
@@ -118,7 +131,12 @@ def list_loans_with_details(
     ]
 
 
-def list_overdue_loans_with_details(db: Session, member_id: Optional[int] = None) -> list[LoanListResponse]:
+def list_overdue_loans_with_details(
+    db: Session,
+    member_id: Optional[int] = None,
+    offset: int = 0,
+    limit: int = 20,
+) -> list[LoanListResponse]:
     query = (
         db.query(Loan, Member.name, Book.title)
         .join(Member, Member.id == Loan.member_id)
@@ -128,7 +146,7 @@ def list_overdue_loans_with_details(db: Session, member_id: Optional[int] = None
     if member_id is not None:
         query = query.filter(Loan.member_id == member_id)
 
-    rows = query.order_by(Loan.borrowed_at.desc()).all()
+    rows = query.order_by(Loan.borrowed_at.desc()).offset(offset).limit(limit).all()
     return [
         LoanListResponse(
             id=loan.id,

@@ -28,8 +28,8 @@ def create_book(db: Session, payload: BookCreate) -> Book:
         raise
 
 
-def list_books(db: Session) -> list[Book]:
-    return db.query(Book).order_by(Book.id.asc()).all()
+def list_books(db: Session, offset: int = 0, limit: int = 20) -> list[Book]:
+    return db.query(Book).order_by(Book.id.asc()).offset(offset).limit(limit).all()
 
 
 def get_book_or_404(db: Session, book_id: int) -> Book:

@@ -14,8 +14,12 @@ def create_member(payload: MemberCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/members", response_model=list[MemberResponse])
-def list_members(db: Session = Depends(get_db)):
-    return member_service.list_members(db)
+def list_members(
+    offset: int = Query(default=0, ge=0),
+    limit: int = Query(default=20, ge=1, le=100),
+    db: Session = Depends(get_db),
+):
+    return member_service.list_members(db, offset=offset, limit=limit)
 
 
 @router.get("/members/{member_id}", response_model=MemberResponse)
@@ -32,6 +36,14 @@ def update_member(member_id: int, payload: MemberUpdate, db: Session = Depends(g
 def member_borrowed_books(
     member_id: int,
     active_only: bool = Query(default=True),
+    offset: int = Query(default=0, ge=0),
+    limit: int = Query(default=20, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
-    return member_service.member_borrowed_books(db, member_id, active_only=active_only)
+    return member_service.member_borrowed_books(
+        db,
+        member_id,
+        active_only=active_only,
+        offset=offset,
+        limit=limit,
+    )

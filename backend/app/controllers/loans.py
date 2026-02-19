@@ -24,14 +24,29 @@ def return_book(loan_id: int, db: Session = Depends(get_db)):
 def list_loans(
     member_id: Optional[int] = Query(default=None),
     active_only: bool = Query(default=False),
+    offset: int = Query(default=0, ge=0),
+    limit: int = Query(default=20, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
-    return loan_service.list_loans_with_details(db, member_id=member_id, active_only=active_only)
+    return loan_service.list_loans_with_details(
+        db,
+        member_id=member_id,
+        active_only=active_only,
+        offset=offset,
+        limit=limit,
+    )
 
 
 @router.get("/loans/overdue", response_model=list[LoanListResponse])
 def list_overdue_loans(
     member_id: Optional[int] = Query(default=None),
+    offset: int = Query(default=0, ge=0),
+    limit: int = Query(default=20, ge=1, le=100),
     db: Session = Depends(get_db),
 ):
-    return loan_service.list_overdue_loans_with_details(db, member_id=member_id)
+    return loan_service.list_overdue_loans_with_details(
+        db,
+        member_id=member_id,
+        offset=offset,
+        limit=limit,
+    )

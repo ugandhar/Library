@@ -23,8 +23,8 @@ def create_member(db: Session, payload: MemberCreate) -> Member:
         raise
 
 
-def list_members(db: Session) -> list[Member]:
-    return db.query(Member).order_by(Member.id.asc()).all()
+def list_members(db: Session, offset: int = 0, limit: int = 20) -> list[Member]:
+    return db.query(Member).order_by(Member.id.asc()).offset(offset).limit(limit).all()
 
 
 def get_member_or_404(db: Session, member_id: int) -> Member:
@@ -55,14 +55,20 @@ def update_member(db: Session, member_id: int, payload: MemberUpdate) -> Member:
         raise
 
 
-def member_borrowed_books(db: Session, member_id: int, active_only: bool = True) -> list[BorrowedBookView]:
+def member_borrowed_books(
+    db: Session,
+    member_id: int,
+    active_only: bool = True,
+    offset: int = 0,
+    limit: int = 20,
+) -> list[BorrowedBookView]:
     get_member_or_404(db, member_id)
 
     query = db.query(Loan, Book).join(Book, Book.id == Loan.book_id).filter(Loan.member_id == member_id)
     if active_only:
         query = query.filter(Loan.returned_at.is_(None))
 
-    rows = query.order_by(Loan.borrowed_at.desc()).all()
+    rows = query.order_by(Loan.borrowed_at.desc()).offset(offset).limit(limit).all()
     today = date.today()
 
     response: list[BorrowedBookView] = []

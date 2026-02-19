@@ -52,3 +52,23 @@ def test_list_books_returns_created_book(client):
     data = response.json()
     assert len(data) == 1
     assert data[0]['isbn'] == '9780132350884'
+
+
+def test_list_books_supports_offset_and_limit(client):
+    for idx in range(3):
+        client.post(
+            '/books',
+            json={
+                'title': f'Book {idx}',
+                'author': 'Author',
+                'isbn': f'978013235088{idx}',
+                'total_copies': 1,
+            },
+        )
+
+    response = client.get('/books?offset=1&limit=1')
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 1
+    assert data[0]['title'] == 'Book 1'
