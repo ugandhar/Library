@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from ..config import settings
 from ..models import Book, Loan, Member
-from ..schemas import BorrowRequest, ReturnResponse
+from ..schemas import BorrowRequest, LoanListResponse, ReturnResponse
 
 
 def borrow_book(db: Session, payload: BorrowRequest) -> Loan:
@@ -85,3 +85,60 @@ def list_overdue_loans(db: Session, member_id: Optional[int] = None) -> list[Loa
     if member_id is not None:
         query = query.filter(Loan.member_id == member_id)
     return query.order_by(Loan.borrowed_at.desc()).all()
+
+
+def list_loans_with_details(
+    db: Session,
+    member_id: Optional[int] = None,
+    active_only: bool = False,
+) -> list[LoanListResponse]:
+    query = (
+        db.query(Loan, Member.name, Book.title)
+        .join(Member, Member.id == Loan.member_id)
+        .join(Book, Book.id == Loan.book_id)
+    )
+    if member_id is not None:
+        query = query.filter(Loan.member_id == member_id)
+    if active_only:
+        query = query.filter(Loan.returned_at.is_(None))
+
+    rows = query.order_by(Loan.borrowed_at.desc()).all()
+    return [
+        LoanListResponse(
+            id=loan.id,
+            member_id=loan.member_id,
+            book_id=loan.book_id,
+            borrowed_at=loan.borrowed_at,
+            due_date=loan.due_date,
+            returned_at=loan.returned_at,
+            member_name=member_name,
+            book_title=book_title,
+        )
+        for loan, member_name, book_title in rows
+    ]
+
+
+def list_overdue_loans_with_details(db: Session, member_id: Optional[int] = None) -> list[LoanListResponse]:
+    query = (
+        db.query(Loan, Member.name, Book.title)
+        .join(Member, Member.id == Loan.member_id)
+        .join(Book, Book.id == Loan.book_id)
+        .filter(Loan.returned_at.is_(None), Loan.due_date < date.today())
+    )
+    if member_id is not None:
+        query = query.filter(Loan.member_id == member_id)
+
+    rows = query.order_by(Loan.borrowed_at.desc()).all()
+    return [
+        LoanListResponse(
+            id=loan.id,
+            member_id=loan.member_id,
+            book_id=loan.book_id,
+            borrowed_at=loan.borrowed_at,
+            due_date=loan.due_date,
+            returned_at=loan.returned_at,
+            member_name=member_name,
+            book_title=book_title,
+        )
+        for loan, member_name, book_title in rows
+    ]

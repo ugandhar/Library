@@ -90,6 +90,11 @@ class LoanResponse(BaseModel):
     returned_at: Optional[datetime]
 
 
+class LoanListResponse(LoanResponse):
+    member_name: str
+    book_title: str
+
+
 class BorrowedBookView(BaseModel):
     loan_id: int
     book_id: int

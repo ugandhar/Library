@@ -119,7 +119,9 @@ def test_list_overdue_loans_returns_only_active_past_due(db_session):
     db_session.add_all([overdue_active, overdue_returned, future_active])
     db_session.commit()
 
-    results = loan_service.list_overdue_loans(db_session)
+    results = loan_service.list_overdue_loans_with_details(db_session)
 
     assert len(results) == 1
     assert results[0].id == overdue_active.id
+    assert results[0].member_name == "Alex"
+    assert results[0].book_title == "Refactoring"
