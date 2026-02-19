@@ -78,3 +78,10 @@ def list_loans(db: Session, member_id: Optional[int] = None, active_only: bool =
     if active_only:
         query = query.filter(Loan.returned_at.is_(None))
     return query.order_by(Loan.borrowed_at.desc()).all()
+
+
+def list_overdue_loans(db: Session, member_id: Optional[int] = None) -> list[Loan]:
+    query = db.query(Loan).filter(Loan.returned_at.is_(None), Loan.due_date < date.today())
+    if member_id is not None:
+        query = query.filter(Loan.member_id == member_id)
+    return query.order_by(Loan.borrowed_at.desc()).all()

@@ -83,6 +83,7 @@ python3 -m pytest -q
 - `POST /loans/{loan_id}/return` - return book
 - `GET /members/{member_id}/borrowed-books` - list member borrowed books
 - `GET /loans` - list loans with filters
+- `GET /loans/overdue` - list active overdue loans (optional `member_id` filter)
 
 ## Sample API Calls
 
@@ -100,6 +101,8 @@ curl -X POST http://127.0.0.1:8000/loans/borrow \
   -d '{"member_id":1,"book_id":1}'
 
 curl -X POST http://127.0.0.1:8000/loans/1/return
+
+curl http://127.0.0.1:8000/loans/overdue
 ```
 
 ## Demo Script

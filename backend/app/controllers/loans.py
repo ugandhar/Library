@@ -27,3 +27,11 @@ def list_loans(
     db: Session = Depends(get_db),
 ):
     return loan_service.list_loans(db, member_id=member_id, active_only=active_only)
+
+
+@router.get("/loans/overdue", response_model=list[LoanResponse])
+def list_overdue_loans(
+    member_id: Optional[int] = Query(default=None),
+    db: Session = Depends(get_db),
+):
+    return loan_service.list_overdue_loans(db, member_id=member_id)
