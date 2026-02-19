@@ -45,6 +45,21 @@ Backend URLs:
 - API base: `http://127.0.0.1:8000`
 - Swagger UI: `http://127.0.0.1:8000/docs`
 
+## API Documentation
+
+Start backend server:
+
+```bash
+cd /Users/swethareddy/projects/Library/backend
+python3 -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Open generated API docs:
+
+- Swagger UI: `http://127.0.0.1:8000/docs`
+- ReDoc: `http://127.0.0.1:8000/redoc`
+- OpenAPI JSON: `http://127.0.0.1:8000/openapi.json`
+
 ## Run Backend Tests
 
 From backend repo folder:
