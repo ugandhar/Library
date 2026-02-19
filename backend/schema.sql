@@ -35,3 +35,6 @@ CREATE TABLE IF NOT EXISTS loans (
 CREATE INDEX IF NOT EXISTS idx_loans_member ON loans(member_id);
 CREATE INDEX IF NOT EXISTS idx_loans_book ON loans(book_id);
 CREATE INDEX IF NOT EXISTS idx_loans_active ON loans(returned_at);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_loans_active_member_book
+    ON loans(member_id, book_id)
+    WHERE returned_at IS NULL;

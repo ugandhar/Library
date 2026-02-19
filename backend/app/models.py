@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, ForeignKey, Integer, String, UniqueConstraint
+from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, ForeignKey, Index, Integer, String, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .database import Base
@@ -59,5 +59,12 @@ class Loan(Base):
     book: Mapped["Book"] = relationship("Book", back_populates="loans")
 
     __table_args__ = (
-        UniqueConstraint("member_id", "book_id", "returned_at", name="uq_member_book_returned_state"),
+        Index(
+            "uq_loans_active_member_book",
+            "member_id",
+            "book_id",
+            unique=True,
+            postgresql_where=text("returned_at IS NULL"),
+            sqlite_where=text("returned_at IS NULL"),
+        ),
     )
