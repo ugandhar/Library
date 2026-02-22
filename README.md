@@ -8,12 +8,13 @@ Python + FastAPI + PostgreSQL backend for library operations.
 - `members`: library member profile/contact info
 - `loans`: borrow/return transaction records
 
-## Run Backend Server (this repo)
+## Clone And Run
 
-From the backend folder in this repo:
+Clone the repository and move to backend folder:
 
 ```bash
-cd /Users/swethareddy/projects/Library/backend
+git clone git@github.com:ugandhar/Library.git
+cd Library/backend
 ```
 
 1. Start PostgreSQL:
@@ -50,7 +51,7 @@ Backend URLs:
 Start backend server:
 
 ```bash
-cd /Users/swethareddy/projects/Library/backend
+cd backend
 python3 -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
@@ -65,7 +66,7 @@ Open generated API docs:
 From backend repo folder:
 
 ```bash
-cd /Users/swethareddy/projects/Library/backend
+cd backend
 python3 -m pytest -q
 ```
 
