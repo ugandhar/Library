@@ -2,6 +2,28 @@
 
 Python + FastAPI + PostgreSQL backend for library operations.
 
+## Prerequisites
+
+- Python **3.9.6** (project currently tested with this version)
+- `pip3`
+- Docker + Docker Compose
+
+Install via Homebrew:
+
+```bash
+brew install python@3.9
+brew install docker docker-compose
+```
+
+Verify:
+
+```bash
+python3 --version
+pip3 --version
+docker --version
+docker compose version
+```
+
 ## Data Model
 
 - `books`: catalog records and available copy counts
